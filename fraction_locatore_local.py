@@ -76,8 +76,8 @@ def get_sheet_by_columns_names(sheet, headers_row=0):
 
 
 def check_message_source(update):
-    # return update["message"]['chat']['username'] in ('TelethonAccounts', 'RATbits', 'jalil_bm')
-    return True
+    return update["message"]['chat']['username'] in ('TelethonAccounts', 'RATbits', 'jalil_bm', 'RatGermany')
+    # return True
 
 
 def help_command(update: Update, context: CallbackContext) -> None:
@@ -158,3 +158,4 @@ if __name__ == "__main__":
 
 # https://console.cloud.google.com/compute/instances?project=telegrambot-342723
 # https://programmingforgood.medium.com/deploy-telegram-bot-on-google-cloud-platform-74f1f531f65e
+# */1 * * * * cd /home/benharkatdjalil/RATmap; nohup python3 /home/benharkatdjalil/RATmap/fraction_locatore_local.py </dev/null &>/dev/null &
