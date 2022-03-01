@@ -1,8 +1,4 @@
 import traceback
-import os
-import http
-from flask import Flask, request
-from werkzeug.wrappers import Response
 import cv2
 import numpy as np
 from PIL import Image
