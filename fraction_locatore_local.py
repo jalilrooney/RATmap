@@ -1,3 +1,5 @@
+import traceback
+
 import cv2
 import numpy as np
 from PIL import Image
@@ -82,7 +84,7 @@ def start(update: Update, context: CallbackContext) -> None:
 
 
 def help_command(update: Update, context: CallbackContext) -> None:
-    update.message.reply_text('USE: /locate_fraction FractionName.png')
+    update.message.reply_text('USE: /ratmap FractionName.png')
 
 
 def get_art_fractions_and_locations(folder_name):
@@ -108,10 +110,10 @@ def get_art_fractions_and_locations(folder_name):
 def locate_fraction(update: Update, context: CallbackContext) -> None:
     try:
         print("Locating Fraction...")
-        pattern = re.compile("/locate_fraction (.*)-(.*).png$")
+        pattern = re.compile("/ratmap (.*)-(.*).png$")
         if not re.search(pattern, update.message.text):
-            update.message.reply_text("Invalid command! Your command should follow the following pattern:\n/locate_fraction Art_name-fraction_name.png\n"
-                                      "(Eg: /locate_fraction I_Fought_The_Law-img1.png)")
+            update.message.reply_text("Invalid command! Your command should follow the following pattern:\n/ratmap Art_name-fraction_name.png\n"
+                                      "(Eg: /ratmap I_Fought_The_Law-img1.png)")
             return
         big_image_name = context.args[0].split("-")[0]
         if big_image_name not in arts.keys():
@@ -127,26 +129,27 @@ def locate_fraction(update: Update, context: CallbackContext) -> None:
         na = draw_arrow_and_rectangle(BigImage(f"./{big_image}"), arts[big_image_name][context.args[0]])
         PIL_image = Image.fromarray(np.uint8(na)).convert('RGB')
         img_byte_arr = io.BytesIO()
-        PIL_image.save(img_byte_arr, format='JPEG', dpi=[300, 300])
+        PIL_image.save(img_byte_arr, format='JPEG', dpi=[30, 30])
         # PIL_image.save('result.jpeg', format='JPEG', dpi=[300, 300])
         img_byte_arr = img_byte_arr.getvalue()
         print("Sending Location...")
         update.message.reply_photo(photo=img_byte_arr, filename=big_image_name + "-LOCATION-" + context.args[0].split("-")[1], timeout=1000)
     except Exception:
+        print(traceback.format_exc())
         update.message.reply_text("Something went wrong with me :'( Please contact @jalil_bm")
 
 
 def unknown_message(update: Update, context: CallbackContext) -> None:
-    CommandHandler("locator_help", help_command)
+    CommandHandler("ratmap_help", help_command)
 
 
 if __name__ == "__main__":
     arts = {}
-    updater = Updater("5293137278:AAFqLHAXvRwOKyj82ujLFWLDS673RQF1xNU")
+    updater = Updater("5250985047:AAFjg_weLVhIKp0sDBEZ5GYGEpQuYVife_A")
     dispatcher = updater.dispatcher
     dispatcher.add_handler(CommandHandler("start", start))
-    dispatcher.add_handler(CommandHandler("locator_help", help_command))
-    dispatcher.add_handler(CommandHandler("locate_fraction", locate_fraction))
+    dispatcher.add_handler(CommandHandler("ratmap_help", help_command))
+    dispatcher.add_handler(CommandHandler("ratmap", locate_fraction))
     dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, unknown_message))
     updater.start_polling()
     updater.idle()
