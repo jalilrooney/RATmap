@@ -156,3 +156,4 @@ if __name__ == "__main__":
     updater.idle()
 
 # https://console.cloud.google.com/compute/instances?project=telegrambot-342723
+# https://programmingforgood.medium.com/deploy-telegram-bot-on-google-cloud-platform-74f1f531f65e

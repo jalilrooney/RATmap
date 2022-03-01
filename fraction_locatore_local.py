@@ -75,15 +75,14 @@ def get_sheet_by_columns_names(sheet, headers_row=0):
     }
 
 
-def start(update: Update, context: CallbackContext) -> None:
-    user = update.effective_user
-    update.message.reply_markdown_v2(
-        fr'Hi {user.mention_markdown_v2()}\!',
-        reply_markup=ForceReply(selective=True),
-    )
+def check_message_source(update):
+    return update["message"]['chat']['username'] in ('TelethonAccounts', 'RATbits')
 
 
 def help_command(update: Update, context: CallbackContext) -> None:
+    if not check_message_source(update):
+        update.message.reply_text('Please message me from https://t.me/RATbits')
+        return
     update.message.reply_text('USE: /ratmap FractionName.png')
 
 
@@ -108,6 +107,9 @@ def get_art_fractions_and_locations(folder_name):
 
 
 def locate_fraction(update: Update, context: CallbackContext) -> None:
+    if not check_message_source(update):
+        update.message.reply_text('Please message me from https://t.me/RATbits')
+        return
     try:
         print("Locating Fraction...")
         pattern = re.compile("/ratmap (.*)-(.*).png$")
@@ -147,21 +149,11 @@ if __name__ == "__main__":
     arts = {}
     updater = Updater("5250985047:AAFjg_weLVhIKp0sDBEZ5GYGEpQuYVife_A")
     dispatcher = updater.dispatcher
-    dispatcher.add_handler(CommandHandler("start", start))
     dispatcher.add_handler(CommandHandler("ratmap_help", help_command))
     dispatcher.add_handler(CommandHandler("ratmap", locate_fraction))
     dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, unknown_message))
     updater.start_polling()
     updater.idle()
 
-
-
-
-    # big_image = BigImage(r"/Volumes/BOOTCAMP/RAT/BANKSY 1/f2aca034-4fb5-46b3-90ff-adc00104f9fb.jpeg")
-    # target_coordinates = {"xs": 3490, "xe": 3890, "ys": 804, "ye": 881}
-    # na = draw_arrow_and_rectangle(big_image, target_coordinates)
-    # PIL_image = Image.fromarray(np.uint8(na)).convert('RGB')
-    # PIL_image.save('result.png')
-
-
-# Image.fromarray(na).save('result.png')
+# https://console.cloud.google.com/compute/instances?project=telegrambot-342723
+# https://programmingforgood.medium.com/deploy-telegram-bot-on-google-cloud-platform-74f1f531f65e
