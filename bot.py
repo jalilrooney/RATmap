@@ -156,11 +156,7 @@ if __name__ == "__main__":
     dispatcher.add_handler(CommandHandler("ratmap_help", help_command))
     dispatcher.add_handler(CommandHandler("ratmap", locate_fraction))
     dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, unknown_message))
-    @app.post("/")
-    def index() -> Response:
-        dispatcher.process_update(
-            Update.de_json(request.get_json(force=True), bot))
-
-        return "", http.HTTPStatus.NO_CONTENT
+    updater.start_polling()
+    updater.idle()
 
 # https://console.cloud.google.com/compute/instances?project=telegrambot-342723
