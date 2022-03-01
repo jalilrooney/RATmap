@@ -76,7 +76,8 @@ def get_sheet_by_columns_names(sheet, headers_row=0):
 
 
 def check_message_source(update):
-    return update["message"]['chat']['username'] in ('TelethonAccounts', 'RATbits', 'jalil_bm')
+    # return update["message"]['chat']['username'] in ('TelethonAccounts', 'RATbits', 'jalil_bm')
+    return True
 
 
 def help_command(update: Update, context: CallbackContext) -> None:
