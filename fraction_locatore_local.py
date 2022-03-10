@@ -245,7 +245,6 @@ def show_chats(update: Update, context: CallbackContext) -> None:
         f" Moreover it is a member of the groups with IDs {group_ids} "
         f"and administrator in the channels with IDs {channel_ids}."
     )
-    print(text)
     update.effective_message.reply_text(text)
 
 
