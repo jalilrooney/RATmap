@@ -84,7 +84,7 @@ def help_command(update: Update, context: CallbackContext) -> None:
     if not check_message_source(update):
         update.message.reply_text('Please message me from https://t.me/RATbits')
         return
-    update.message.reply_text('USE: /ratmap FractionName.png')
+    update.message.reply_text('USE: /ratmap FractionName')
 
 
 def get_art_fractions_and_locations(folder_name):
@@ -113,10 +113,10 @@ def locate_fraction(update: Update, context: CallbackContext) -> None:
         return
     try:
         print("Locating Fraction...")
-        pattern = re.compile("/ratmap (.*)-(.*).png$")
+        pattern = re.compile("/ratmap (.*)-(.*)$")
         if not re.search(pattern, update.message.text):
-            update.message.reply_text("Invalid command! Your command should follow the following pattern:\n/ratmap Art_name-fraction_name.png\n"
-                                      "(Eg: /ratmap I_Fought_The_Law-img1.png)")
+            update.message.reply_text("Invalid command! Your command should follow the following pattern:\n/ratmap Art_name-fraction_name\n"
+                                      "(Eg: /ratmap I_Fought_The_Law-1)")
             return
         big_image_name = context.args[0].split("-")[0]
         if big_image_name not in arts.keys():
@@ -125,7 +125,8 @@ def locate_fraction(update: Update, context: CallbackContext) -> None:
             else:
                 update.message.reply_text("Invalid fraction name or the art has not been fed yet to me, report to @jalil_bm if you are sure about the fraction name")
                 return
-        if context.args[0] not in list(arts[big_image_name].keys()):
+        if context.args[0] not in [frac.replace('.png', '') for frac in list(arts[big_image_name].keys())]:
+            print(arts[big_image_name].keys())
             update.message.reply_text("Invalid fraction name or the art has not been fed yet to me, report to @jalil_bm if you are sure about the fraction name")
             return
         big_image = [filename for filename in os.listdir('.') if filename.startswith(f"{big_image_name}") and os.path.isfile(f"./{filename}")][0]
