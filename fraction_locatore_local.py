@@ -12,6 +12,9 @@ from openpyxl import Workbook, load_workbook
 import os
 import io
 import re
+from fake_headers import Headers
+from jsonsearch import JsonSearch
+import requests
 
 # Enable logging
 logging.basicConfig(
@@ -249,6 +252,22 @@ def show_chats(update: Update, context: CallbackContext) -> None:
     update.effective_message.reply_text(text)
 
 
+def get_price(url):
+    price = requests.get(url, headers=Headers(os="mac", headers=True).generate()).json()
+    jsondata = JsonSearch(object=price, mode='j')
+    return jsondata.search_first_value(key='price')
+
+
+def convert_balance_to_usd(update: Update, context: CallbackContext) -> None:
+    RAT_balance = update.message.text.lower().replace("/ratusd", "").replace("rat", "").strip()
+    try:
+        balance = float(RAT_balance)
+    except Exception:
+        update.message.reply_text('Please enter a correct value')
+        return
+    pair_url = "https://www.dextools.io/chain-ethereum/api/Uniswap/1/pairexplorer?v=2.11.1&pair=0xd779e8cf1d945653bb24338f0ce5c46bf9c92311&ts"
+    update.message.reply_text(f"{round(balance * get_price(pair_url), 2)} USD")
+
 
 if __name__ == "__main__":
     arts = {}
@@ -257,6 +276,7 @@ if __name__ == "__main__":
     dispatcher.add_handler(CommandHandler("ratmap_help", help_command))
     dispatcher.add_handler(CommandHandler("ratmap", locate_fraction))
     dispatcher.add_handler(CommandHandler("show_chats", show_chats))
+    dispatcher.add_handler(CommandHandler("ratusd", convert_balance_to_usd))
     dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, unknown_message))
     dispatcher.add_handler(MessageHandler(Filters.text, unknown_message))
     dispatcher.add_handler(ChatMemberHandler(track_chats, ChatMemberHandler.MY_CHAT_MEMBER))
