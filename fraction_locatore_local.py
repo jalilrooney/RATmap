@@ -89,7 +89,7 @@ def start(update: Update, context: CallbackContext) -> None:
 This bot is developed by @RATbits to help members using the following command:
 
 /ratmap - Locate your NFT fraction on a selected Art. i.e: /ratmap I_Fought_The_Law-1
-/ratusd - To get the USD value of a RAT amount <b>[Must be sent as a DM to me at @RolandRATmapBOT]</b>. i.e: /ratusd 1000000
+/ratusd - To get the USD value of a RAT amount. i.e: /ratusd 1000000
     """
     update.message.reply_text(text, parse_mode=ParseMode.HTML)
 
