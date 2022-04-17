@@ -267,7 +267,7 @@ def convert_balance_to_usd(update: Update, context: CallbackContext) -> None:
         return
     pair_url = "https://www.dextools.io/chain-ethereum/api/Uniswap/1/pairexplorer?v=2.11.1&pair=0xd779e8cf1d945653bb24338f0ce5c46bf9c92311&ts"
     usd_balance = balance * get_price(pair_url)
-    formatted_usd_balance = str('{0:.20f}'.format(usd_balance)).strip('0')
+    formatted_usd_balance = str('{0:.20f}'.format(usd_balance)).rstrip('0')
     if usd_balance >= 1:
         formatted_usd_balance = round(balance * get_price(pair_url), 2)
     update.message.reply_text(f"{formatted_usd_balance} USD")
