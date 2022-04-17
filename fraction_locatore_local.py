@@ -7,6 +7,7 @@ from matplotlib import pyplot as plt
 from colour import Color
 import logging
 from telegram import Update, ForceReply, Chat, ChatMember, ParseMode, ChatMemberUpdated
+from telegram import ParseMode
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext, ChatMemberHandler
 from openpyxl import Workbook, load_workbook
 import os
@@ -81,6 +82,16 @@ def get_sheet_by_columns_names(sheet, headers_row=0):
 def check_message_source(update):
     return update["message"]['chat']['username'] in ('TelethonAccounts', 'RATbits', 'jalil_bm', 'RatGermany', 'raredubai', 'DubaiRAT')
     # return True
+
+
+def start(update: Update, context: CallbackContext) -> None:
+    text = """
+This bot is developed by @RATbits to help members using the following command:
+
+/ratmap - Locate your NFT fraction on a selected Art. i.e: /ratmap I_Fought_The_Law-1
+/ratusd - To get the USD value of a RAT amount <b>[Must be sent as a DM to me at @RolandRATmapBOT]</b>. i.e: /ratusd 1000000
+    """
+    update.message.reply_text(text, parse_mode=ParseMode.HTML)
 
 
 def help_command(update: Update, context: CallbackContext) -> None:
@@ -239,19 +250,6 @@ def greet_chat_members(update: Update, context: CallbackContext) -> None:
             parse_mode=ParseMode.HTML)
 
 
-def show_chats(update: Update, context: CallbackContext) -> None:
-    """Shows which chats the bot is in"""
-    user_ids = ", ".join(str(uid) for uid in context.bot_data.setdefault("user_ids", set()))
-    group_ids = ", ".join(str(gid) for gid in context.bot_data.setdefault("group_ids", set()))
-    channel_ids = ", ".join(str(cid) for cid in context.bot_data.setdefault("channel_ids", set()))
-    text = (
-        f"@{context.bot.username} is currently in a conversation with the user IDs {user_ids}."
-        f" Moreover it is a member of the groups with IDs {group_ids} "
-        f"and administrator in the channels with IDs {channel_ids}."
-    )
-    update.effective_message.reply_text(text)
-
-
 def get_price(url):
     price = requests.get(url, headers=Headers(os="mac", headers=True).generate()).json()
     jsondata = JsonSearch(object=price, mode='j')
@@ -260,6 +258,9 @@ def get_price(url):
 
 def convert_balance_to_usd(update: Update, context: CallbackContext) -> None:
     RAT_balance = update.message.text.lower().replace("/ratusd", "").replace("rat", "").strip()
+    if update.message.chat.type != "private":
+        update.message.reply_text('For your own privacy, always send me the /ratusd command as a private message here @RolandRATmapBOT')
+        return
     try:
         balance = float(RAT_balance)
     except Exception:
@@ -279,8 +280,8 @@ if __name__ == "__main__":
     dispatcher = updater.dispatcher
     dispatcher.add_handler(CommandHandler("ratmap_help", help_command))
     dispatcher.add_handler(CommandHandler("ratmap", locate_fraction))
-    dispatcher.add_handler(CommandHandler("show_chats", show_chats))
     dispatcher.add_handler(CommandHandler("ratusd", convert_balance_to_usd))
+    dispatcher.add_handler(CommandHandler("start", start))
     dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, unknown_message))
     dispatcher.add_handler(MessageHandler(Filters.text, unknown_message))
     dispatcher.add_handler(ChatMemberHandler(track_chats, ChatMemberHandler.MY_CHAT_MEMBER))
