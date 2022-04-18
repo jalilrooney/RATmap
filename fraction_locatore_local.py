@@ -86,7 +86,7 @@ def check_message_source(update):
 
 def start(update: Update, context: CallbackContext) -> None:
     text = """
-This bot is developed by @RATbits to help members using the following command:
+This bot is developed by @RATbits to help members using the following commands:
 
 /ratmap - Locate your NFT fraction on a selected Art. i.e: /ratmap I_Fought_The_Law-1
 /ratusd - To get the USD value of a RAT amount. i.e: /ratusd 1000000
