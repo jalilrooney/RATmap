@@ -267,10 +267,9 @@ def convert_balance_to_usd(update: Update, context: CallbackContext) -> None:
     except Exception:
         update.message.reply_text('Please enter a correct value')
         return
-    # timestamp = requests.get("https://www.dextools.io/chain-ethereum/api/Uniswap/1/pairexplorer-status?pair=0xd779e8cf1d945653bb24338f0ce5c46bf9c92311",
-    #                          headers=Headers(os="mac", headers=True).generate()).text.replace('"', '')
-    pair_url = "https://www.dextools.io/chain-ethereum/api/Uniswap/1/pairexplorer?v=2.11.1&pair=0xd779e8cf1d945653bb24338f0ce5c46bf9c92311&ts="
-    print(pair_url)
+    timestamp = requests.get("https://www.dextools.io/chain-ethereum/api/Uniswap/1/pairexplorer-status?pair=0xd779e8cf1d945653bb24338f0ce5c46bf9c92311",
+                             headers=Headers(os="mac", headers=True).generate()).text.replace('"', '')
+    pair_url = "https://www.dextools.io/chain-ethereum/api/Uniswap/1/pairexplorer?v=2.11.1&pair=0xd779e8cf1d945653bb24338f0ce5c46bf9c92311&ts=" + timestamp
     usd_balance = balance * get_price(pair_url)
     formatted_usd_balance = str('{0:.20f}'.format(usd_balance)).rstrip('0')
     if usd_balance >= 1:
