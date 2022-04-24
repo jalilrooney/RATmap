@@ -16,6 +16,9 @@ import re
 from fake_headers import Headers
 from jsonsearch import JsonSearch
 import requests
+from datetime import datetime
+import calendar
+import time
 
 # Enable logging
 logging.basicConfig(
@@ -250,11 +253,16 @@ def greet_chat_members(update: Update, context: CallbackContext) -> None:
             parse_mode=ParseMode.HTML)
 
 
-def get_price(url):
-    price = requests.get(url, headers=Headers(os="mac", headers=True).generate()).json()['result'][-1]
-    print(price)
-    jsondata = JsonSearch(object=price, mode='j')
-    return jsondata.search_first_value(key='price')
+def get_price():
+    pattern = "%Y/%m/%d %H:%M:%S"
+    gmt_midnight_timestamp = int(calendar.timegm(time.strptime("2022/05/01" + " " + "00:00:00", pattern))) * 1000
+    candles = requests.get(f"https://www.dextools.io/chain-ethereum/api/Uniswap/history/candles?sym=usd&span=day&pair=0xd779e8cf1d945653bb24338f0ce5c46bf9c92311&ts={gmt_midnight_timestamp}", headers=Headers(os="mac", headers=True).generate()).json()["data"]["candles"]
+    while not candles:
+        gmt_midnight_timestamp -= 86400000
+        print(gmt_midnight_timestamp)
+        candles = requests.get(f"https://www.dextools.io/chain-ethereum/api/Uniswap/history/candles?sym=usd&span=day&pair=0xd779e8cf1d945653bb24338f0ce5c46bf9c92311&ts={gmt_midnight_timestamp}", headers=Headers(os="mac", headers=True).generate()).json()["data"]["candles"]
+    price = float(candles[-1]["close"])
+    return price
 
 
 def convert_balance_to_usd(update: Update, context: CallbackContext) -> None:
@@ -267,14 +275,15 @@ def convert_balance_to_usd(update: Update, context: CallbackContext) -> None:
     except Exception:
         update.message.reply_text('Please enter a correct value')
         return
-    timestamp = requests.get("https://www.dextools.io/chain-ethereum/api/Uniswap/1/pairexplorer-status?pair=0xd779e8cf1d945653bb24338f0ce5c46bf9c92311",
-                             headers=Headers(os="mac", headers=True).generate()).text.replace('"', '')
-    pair_url = "https://www.dextools.io/chain-ethereum/api/Uniswap/1/pairexplorer?v=2.11.1&pair=0xd779e8cf1d945653bb24338f0ce5c46bf9c92311&ts=" + timestamp
-    usd_balance = balance * get_price(pair_url)
+    # pair_url = f"https://www.dextools.io/chain-ethereum/api/Uniswap/history/candles?sym=usd&span=day&pair=0xd779e8cf1d945653bb24338f0ce5c46bf9c92311&ts=1650844800000"
+    usd_balance = balance * get_price()
     formatted_usd_balance = str('{0:.20f}'.format(usd_balance)).rstrip('0')
     if usd_balance >= 1:
-        formatted_usd_balance = round(balance * get_price(pair_url), 2)
+        formatted_usd_balance = round(balance * get_price(), 2)
     update.message.reply_text(f"{formatted_usd_balance} USD")
+
+    # https://www.dextools.io/chain-ethereum/api/Uniswap/1/pairexplorer?v=2.11.3&pair=0xd779e8cf1d945653bb24338f0ce5c46bf9c92311&ts=0-0
+    # "price":0.00033896994708647966
 
 
 if __name__ == "__main__":
@@ -291,7 +300,6 @@ if __name__ == "__main__":
     dispatcher.add_handler(ChatMemberHandler(greet_chat_members, ChatMemberHandler.CHAT_MEMBER))
     updater.start_polling(allowed_updates=Update.ALL_TYPES)
     updater.start_polling()
-    updater.idle()
 
 # https://console.cloud.google.com/compute/instances?project=telegrambot-342723
 # https://programmingforgood.medium.com/deploy-telegram-bot-on-google-cloud-platform-74f1f531f65e
