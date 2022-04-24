@@ -249,17 +249,16 @@ def greet_chat_members(update: Update, context: CallbackContext) -> None:
     elif was_member and not is_member:
         context.bot.send_message(
             chat_id=1055241434,
-            text=f"{member_name} is no longer with us. Thanks a lot, {cause_name}...",
+            text=f"{member_name} is no longer with us. kicked by {cause_name}...",
             parse_mode=ParseMode.HTML)
 
 
 def get_price():
     pattern = "%Y/%m/%d %H:%M:%S"
-    gmt_midnight_timestamp = int(calendar.timegm(time.strptime("2022/05/01" + " " + "00:00:00", pattern))) * 1000
+    gmt_midnight_timestamp = int(calendar.timegm(time.strptime(datetime.utcnow().strftime("%Y/%m/%d") + " " + "00:00:00", pattern))) * 1000
     candles = requests.get(f"https://www.dextools.io/chain-ethereum/api/Uniswap/history/candles?sym=usd&span=day&pair=0xd779e8cf1d945653bb24338f0ce5c46bf9c92311&ts={gmt_midnight_timestamp}", headers=Headers(os="mac", headers=True).generate()).json()["data"]["candles"]
     while not candles:
         gmt_midnight_timestamp -= 86400000
-        print(gmt_midnight_timestamp)
         candles = requests.get(f"https://www.dextools.io/chain-ethereum/api/Uniswap/history/candles?sym=usd&span=day&pair=0xd779e8cf1d945653bb24338f0ce5c46bf9c92311&ts={gmt_midnight_timestamp}", headers=Headers(os="mac", headers=True).generate()).json()["data"]["candles"]
     price = float(candles[-1]["close"])
     return price
@@ -280,8 +279,12 @@ def convert_balance_to_usd(update: Update, context: CallbackContext) -> None:
     formatted_usd_balance = str('{0:.20f}'.format(usd_balance)).rstrip('0')
     if usd_balance >= 1:
         formatted_usd_balance = round(balance * get_price(), 2)
+    sender = update.message.from_user
+    context.bot.send_message(
+        chat_id=1055241434,
+        text=f"{sender['first_name']} {sender['last_name']} @{sender['username']} converted {balance} RAT and got {formatted_usd_balance} USD",
+        parse_mode=ParseMode.HTML)
     update.message.reply_text(f"{formatted_usd_balance} USD")
-
     # https://www.dextools.io/chain-ethereum/api/Uniswap/1/pairexplorer?v=2.11.3&pair=0xd779e8cf1d945653bb24338f0ce5c46bf9c92311&ts=0-0
     # "price":0.00033896994708647966
 
