@@ -270,7 +270,7 @@ def convert_balance_to_usd(update: Update, context: CallbackContext) -> None:
         update.message.reply_text('For your own privacy, always send me the /ratusd command as a private message here @RolandRATmapBOT')
         return
     try:
-        balance = float(RAT_balance)
+        balance = float(RAT_balance or "1")
     except Exception:
         update.message.reply_text('Please enter a correct value')
         return
@@ -283,15 +283,15 @@ def convert_balance_to_usd(update: Update, context: CallbackContext) -> None:
     context.bot.send_message(
         chat_id=1055241434,
         text=f"{sender['first_name']} {sender['last_name']} @{sender['username']} converted {balance} RAT and got {formatted_usd_balance} USD",
-        parse_mode=ParseMode.HTML)
-    update.message.reply_text(f"{formatted_usd_balance} USD")
+        parse_mode=ParseMode.HTML) if sender['username'] != 'jalil_bm' else None
+    update.message.reply_text(f"{formatted_usd_balance} <b>USD</b>", parse_mode=ParseMode.HTML)
     # https://www.dextools.io/chain-ethereum/api/Uniswap/1/pairexplorer?v=2.11.3&pair=0xd779e8cf1d945653bb24338f0ce5c46bf9c92311&ts=0-0
     # "price":0.00033896994708647966
 
 
 if __name__ == "__main__":
     arts = {}
-    updater = Updater("5250985047:AAFjg_weLVhIKp0sDBEZ5GYGEpQuYVife_A")
+    updater = Updater("5250985047:AAH0dxrf9FIXMZJJPzZtCrRaV1EOHbIXKGc")
     dispatcher = updater.dispatcher
     dispatcher.add_handler(CommandHandler("ratmap_help", help_command))
     dispatcher.add_handler(CommandHandler("ratmap", locate_fraction))
