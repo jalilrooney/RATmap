@@ -1,0 +1,9 @@
+CREATE DATABASE RAT;
+USE RAT;
+
+CREATE  TABLE IF NOT EXISTS Holders (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  wallet_address VARCHAR(255) NOT NULL,
+  telegram_username VARCHAR(255),
+  ronald_chat_id INT
+)
