@@ -46,10 +46,13 @@ def get_balance(update: Update, context: CallbackContext):
         return update.message.reply_text("You didn't add an address, you can add one using the command /add_address")
     holder_address = get_holders_addresses(int(sender['id']))
     holder_RAT_balance = get_RAT_balance(holder_address)
-    holder_USD_balance = get_price() * holder_RAT_balance
-    if holder_USD_balance >= 1:
-        holder_USD_balance = round(holder_USD_balance, 2)
-        holder_RAT_balance = round(holder_RAT_balance, 2)
+    if holder_RAT_balance > 0:
+        holder_USD_balance = get_price() * holder_RAT_balance
+        if holder_USD_balance >= 1:
+            holder_USD_balance = round(holder_USD_balance, 2)
+            holder_RAT_balance = round(holder_RAT_balance, 2)
+    else:
+        holder_USD_balance = 0.0
     update.message.reply_text(f"{holder_address[0:6]}...{holder_address[38:]}:"
                               f"\n\n{holder_RAT_balance} <b>RAT</b>"
                               f"\n{holder_USD_balance} <b>USD</b>", parse_mode=ParseMode.HTML)

@@ -1,9 +1,16 @@
 import mysql.connector
 
-connection = mysql.connector.connect(user='root', password='@Beastmode9294',
-                                     host='127.0.0.1',
-                                     database='RAT',
-                                     auth_plugin='mysql_native_password')
+
+try:
+    connection = mysql.connector.connect(user='root', password='@Beastmode9294',
+                                         host='127.0.0.1',
+                                         database='RAT',
+                                         auth_plugin='mysql_native_password')
+except:
+    connection = mysql.connector.connect(user='root', password='    ',
+                                         host='127.0.0.1',
+                                         database='RAT',
+                                         auth_plugin='mysql_native_password')
 cursor = connection.cursor()
 cursor.execute("USE RAT")
 
