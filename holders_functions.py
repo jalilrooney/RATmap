@@ -16,6 +16,9 @@ def add_address(update: Update, context: CallbackContext):
     sender = update.message.from_user
     if sender['is_bot']:
         return
+    if update.message.chat.type != "private":
+        update.message.reply_text('For your own privacy, always send me the /ratusd command as a private message here @RolandRATmapBOT')
+        return
     if int(sender['id']) in get_ronald_chat_ids():
         return update.message.reply_text("You have already added your address, you can change it using the command /change_address")
     holder_address = update.message.text.replace("/add_address", "").strip()
@@ -30,6 +33,9 @@ def add_address(update: Update, context: CallbackContext):
 def change_address(update: Update, context: CallbackContext):
     sender = update.message.from_user
     if sender['is_bot']:
+        return
+    if update.message.chat.type != "private":
+        update.message.reply_text('For your own privacy, always send me the /ratusd command as a private message here @RolandRATmapBOT')
         return
     if int(sender['id']) not in get_ronald_chat_ids():
         return update.message.reply_text("You didn't add an address, you can add one using the command /add_address")
@@ -47,6 +53,9 @@ def change_address(update: Update, context: CallbackContext):
 def get_balance(update: Update, context: CallbackContext):
     sender = update.message.from_user
     if sender['is_bot']:
+        return
+    if update.message.chat.type != "private":
+        update.message.reply_text('For your own privacy, always send me the /ratusd command as a private message here @RolandRATmapBOT')
         return
     if int(sender['id']) not in get_ronald_chat_ids():
         return update.message.reply_text("You didn't add an address, you can add one using the command /add_address")
