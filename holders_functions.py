@@ -14,6 +14,8 @@ def get_RAT_balance(wallet_address):
 
 def add_address(update: Update, context: CallbackContext):
     sender = update.message.from_user
+    if sender['is_bot']:
+        return
     if int(sender['id']) in get_ronald_chat_ids():
         return update.message.reply_text("You have already added your address, you can change it using the command /change_address")
     holder_address = update.message.text.replace("/add_address", "").strip()
@@ -27,12 +29,14 @@ def add_address(update: Update, context: CallbackContext):
 
 def change_address(update: Update, context: CallbackContext):
     sender = update.message.from_user
+    if sender['is_bot']:
+        return
     if int(sender['id']) not in get_ronald_chat_ids():
         return update.message.reply_text("You didn't add an address, you can add one using the command /add_address")
     holder_address = update.message.text.replace("/change_address", "").strip()
     if not coinaddrvalidator.validate('eth', holder_address).valid:
         update.message.reply_text("ERROR: Invalid Address! Use the following pattern:"
-                                  "\n/add_address 0x00000...0000")
+                                  "\n/change_address 0x00000...0000")
         return
     # wallet_address = dispatcher.add_handler(convert_balance_to_usd)
     else:
@@ -42,6 +46,8 @@ def change_address(update: Update, context: CallbackContext):
 
 def get_balance(update: Update, context: CallbackContext):
     sender = update.message.from_user
+    if sender['is_bot']:
+        return
     if int(sender['id']) not in get_ronald_chat_ids():
         return update.message.reply_text("You didn't add an address, you can add one using the command /add_address")
     holder_address = get_holders_addresses(int(sender['id']))

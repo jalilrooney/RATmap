@@ -64,6 +64,9 @@ def get_art_fractions_and_locations(folder_name):
 
 
 def locate_fraction(update: Update, context: CallbackContext) -> None:
+    sender = update.message.from_user
+    if sender['is_bot']:
+        return
     if not check_message_source(update):
         update.message.reply_text('Please message me from https://t.me/RATbits')
         return

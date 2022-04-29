@@ -20,6 +20,9 @@ def get_price():
 
 
 def convert_balance_to_usd(update: Update, context: CallbackContext) -> None:
+    sender = update.message.from_user
+    if sender['is_bot']:
+        return
     RAT_balance = update.message.text.lower().replace("/ratusd", "").replace("rat", "").strip()
     if update.message.chat.type != "private":
         update.message.reply_text('For your own privacy, always send me the /ratusd command as a private message here @RolandRATmapBOT')

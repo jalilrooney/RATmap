@@ -23,6 +23,9 @@ def check_message_source(update):
 
 
 def start(update: Update, context: CallbackContext) -> None:
+    sender = update.message.from_user
+    if sender['is_bot']:
+        return
     text = """
 This bot is developed by @RATbits to help members using the following commands:
 
@@ -33,6 +36,9 @@ This bot is developed by @RATbits to help members using the following commands:
 
 
 def help_command(update: Update, context: CallbackContext) -> None:
+    sender = update.message.from_user
+    if sender['is_bot']:
+        return
     if not check_message_source(update):
         update.message.reply_text('Please message me from https://t.me/RATbits')
         return
