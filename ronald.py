@@ -29,8 +29,11 @@ def start(update: Update, context: CallbackContext) -> None:
     text = """
 This bot is developed by @RATbits to help members using the following commands:
 
+/balance - Get your RAT balance in both RAT and USD
 /ratmap - Locate your NFT fraction on a selected Art. i.e: /ratmap I_Fought_The_Law-1
-/ratusd - To get the USD value of a RAT amount. i.e: /ratusd 1000000
+/ratusd - Get the USD value of a RAT amount. i.e: /ratusd 1000000 (/ratusd same as /ratusd 1)
+/add_address - Add your wallet address to my DataBase
+/change_address - Change your saved wallet address
     """
     update.message.reply_text(text, parse_mode=ParseMode.HTML)
 
@@ -56,6 +59,7 @@ if __name__ == "__main__":
     dispatcher.add_handler(CommandHandler("ratmap", locate_fraction))
     dispatcher.add_handler(CommandHandler("ratusd", convert_balance_to_usd))
     dispatcher.add_handler(CommandHandler("start", start))
+    dispatcher.add_handler(CommandHandler("help", start))
     dispatcher.add_handler(CommandHandler("add_address", add_address))
     dispatcher.add_handler(CommandHandler("change_address", change_address))
     dispatcher.add_handler(CommandHandler("balance", get_balance))
