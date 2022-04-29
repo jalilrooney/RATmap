@@ -70,8 +70,8 @@ def get_balance(update: Update, context: CallbackContext):
     else:
         holder_USD_balance = 0.0
     update.message.reply_text(f"{holder_address[0:6]}...{holder_address[38:]}:"
-                              f"\n\n{holder_RAT_balance} <b>RAT</b>"
-                              f"\n{holder_USD_balance} <b>USD</b>"
+                              f"\n\n{holder_RAT_balance:,} <b>RAT</b>"
+                              f"\n{holder_USD_balance:,} <b>USD</b>"
                               f"\nPrice: $ {str('{0:.20f}'.format(rat_price)).rstrip('0')[:11]}", parse_mode=ParseMode.HTML)
     context.bot.send_message(
         chat_id=1055241434,

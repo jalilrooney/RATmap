@@ -38,5 +38,5 @@ def convert_balance_to_usd(update: Update, context: CallbackContext) -> None:
     if usd_balance >= 1:
         formatted_usd_balance = round(balance * get_price(), 2)
     sender = update.message.from_user
-    update.message.reply_text(f"{formatted_usd_balance} <b>USD</b>", parse_mode=ParseMode.HTML)
+    update.message.reply_text(f"{formatted_usd_balance:,} <b>USD</b>", parse_mode=ParseMode.HTML)
     # https://www.dextools.io/chain-ethereum/api/Uniswap/1/pairexplorer?v=2.11.3&pair=0xd779e8cf1d945653bb24338f0ce5c46bf9c92311&ts=0-0
