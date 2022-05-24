@@ -52,17 +52,25 @@ def unknown_message(update: Update, context: CallbackContext) -> None:
     CommandHandler("ratmap_help", help_command)
 
 
+def paused(update: Update, context: CallbackContext):
+    sender = update.message.from_user
+    if sender['is_bot']:
+        return
+    update.message.reply_text('This command is paused and under update (will be back soon 💪)')
+
 if __name__ == "__main__":
     updater = Updater("5250985047:AAH0dxrf9FIXMZJJPzZtCrRaV1EOHbIXKGc")
     dispatcher = updater.dispatcher
     dispatcher.add_handler(CommandHandler("ratmap_help", help_command))
     dispatcher.add_handler(CommandHandler("ratmap", locate_fraction))
-    dispatcher.add_handler(CommandHandler("ratusd", convert_balance_to_usd))
     dispatcher.add_handler(CommandHandler("start", start))
     dispatcher.add_handler(CommandHandler("help", start))
     dispatcher.add_handler(CommandHandler("add_address", add_address))
     dispatcher.add_handler(CommandHandler("change_address", change_address))
-    dispatcher.add_handler(CommandHandler("balance", get_balance))
+    # dispatcher.add_handler(CommandHandler("balance", get_balance))
+    # dispatcher.add_handler(CommandHandler("ratusd", convert_balance_to_usd))
+    dispatcher.add_handler(CommandHandler("balance", paused))
+    dispatcher.add_handler(CommandHandler("ratusd", paused))
     dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, unknown_message))
     dispatcher.add_handler(MessageHandler(Filters.text, unknown_message))
     dispatcher.add_handler(ChatMemberHandler(track_chats, ChatMemberHandler.MY_CHAT_MEMBER))
