@@ -8,7 +8,7 @@ from token_functions import get_price
 
 
 def get_RAT_balance(wallet_address):
-    RAT_balance = eth.get_acc_balance_by_token_and_contract_address(contract_address="0x4eA507bf90b2D206BfF56999dc76E39e447d2587", address=wallet_address)
+    RAT_balance = eth.get_acc_balance_by_token_and_contract_address(contract_address="0x57be5cf6CBd6843A1470EeabEF8498347821366E", address=wallet_address)
     return float(int(RAT_balance) / 1000000000)
 
 
